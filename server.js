@@ -12,7 +12,7 @@ app.get('/', (req, res) => {
 })
 
 app.listen(port, () => {
-    console.log('Example app listening at 3000')
+    console.log('Aincrad Server listening at 3000')
 })
 
 //login
@@ -37,7 +37,7 @@ app.post('/login', function (request, response) {
 //get data pasien
 app.post('/pasien', function (request, response) {
     const iduser = request.body.iduser;
-    dbConn.query('SELECT * FROM `pasien` INNER JOIN `user` ON pasien.iduser = ?', [iduser], function (error, results) {
+    dbConn.query('SELECT * FROM `pasien` INNER JOIN `user` ON pasien.iduser = user.iduser WHERE pasien.iduser = ?', [iduser], function (error, results) {
         if (results.length > 0) {
             response.send({ data: results, message: 'your data' })
         } else {
@@ -50,7 +50,7 @@ app.post('/pasien', function (request, response) {
 //get data rekam medis pasien
 app.post('/rekammedis', function (request, response) {
     const nip = request.body.nip;
-    dbConn.query('SELECT a.*, b.*, c.*, d.* FROM rekam_medis a LEFT JOIN pasien b ON a.nip = b.nip INNER JOIN dokter c ON a.nid = c.nid INNER JOIN faskes d ON a.id_faskes = d.idfaskes WHERE a.nip = ?', [nip], function (error, results) {
+    dbConn.query('SELECT a.*, b.*, c.*, d.* FROM rekam_medis a LEFT JOIN pasien b ON a.nip = b.nip INNER JOIN dokter c ON a.nid = c.nid INNER JOIN faskes d ON a.id_faskes = d.idfaskes WHERE a.nip = ? ORDER BY a.tgl_berobat DESC', [nip], function (error, results) {
         if (results.length > 0) {
             response.send({ data: results, message: 'your data', status:  200 })
         } else {
